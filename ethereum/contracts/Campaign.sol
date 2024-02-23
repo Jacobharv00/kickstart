@@ -1,5 +1,6 @@
 pragma solidity ^0.4.17;
 
+
 contract CampaignFactory {
     address[] public deployedCampaigns;
 
@@ -12,6 +13,7 @@ contract CampaignFactory {
         return deployedCampaigns;
     }
 }
+
 
 contract Campaign {
     struct Request {
@@ -76,5 +78,19 @@ contract Campaign {
 
         request.recipient.transfer(request.value);
         request.complete = true;
+    }
+
+    function getSummary() public view returns (uint, uint, uint, uint, address) {
+        return (
+            minimumContribution,
+            this.balance,
+            requests.length,
+            approversCount,
+            manager
+        );
+    }
+
+    function getRequestsCount() public view returns (uint) {
+        return requests.length;
     }
 }
