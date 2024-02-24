@@ -15,6 +15,7 @@ class CampaignNew extends Component {
 
     onSubmit = async (event) => {
         event.preventDefault();
+
         this.setState({ isLoading: true, errorMessage: "" });
 
         try {
@@ -23,18 +24,27 @@ class CampaignNew extends Component {
                 .createCampaign(this.state.minimumContribution)
                 .send({
                     from: accounts[0],
+                    gas: "1000000",
                 });
 
             // Navigate to home page
             Router.pushRoute("/");
         } catch (error) {
-            console.log("Error:", JSON.stringify(error, null, 2));
+            console.log(
+                "Error creating campaign -->",
+                JSON.stringify(error, null, 2)
+            );
+
             this.setState({
-                errorMessage: error.message ?? "Sorry, something went wrong.",
+                errorMessage:
+                    error.message ??
+                    "Sorry, something went wrong please try again later",
                 minimumContribution: "",
                 isLoading: false,
             });
         }
+
+        this.setState({ isLoading: false });
     };
 
     render() {
