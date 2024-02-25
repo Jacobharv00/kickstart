@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import { Button, Form, Input, Message } from "semantic-ui-react";
 
 import Campaign from "../ethereum/campaign";
+import web3 from "../ethereum/web3";
+import { Router } from "../routes";
 
 class ContributeForm extends Component {
     state = {
@@ -18,17 +20,15 @@ class ContributeForm extends Component {
 
         try {
             const accounts = await web3.eth.getAccounts();
-            await factory.methods
-                .contribute() // add params
-                .send({
-                    from: accounts[0],
-                    // gas: "1000000",
-                });
+            await campaign.methods.contribute().send({
+                from: accounts[0],
+                value: web3.utils.toWei(this.state.value, "ether"),
+            });
+
+            // Manually refresh the page
+            Router.replaceRoute(`/campaigns/${this.props.address}`);
         } catch (error) {
-            console.log(
-                "Error contributing to the campaign -->",
-                JSON.stringify(error, null, 2)
-            );
+            console.log("Error contributing to the campaign -->", error);
 
             this.setState({
                 errorMessage:
@@ -55,11 +55,13 @@ class ContributeForm extends Component {
                         }
                     />
                 </Form.Field>
+                <Message error header="" content={this.state.errorMessage} />
                 <Button
                     style={{
                         backgroundColor: "purple",
                         color: "white",
                     }}
+                    loading={this.state.isLoading}
                 >
                     Contribute!
                 </Button>

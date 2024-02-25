@@ -24,16 +24,12 @@ class CampaignNew extends Component {
                 .createCampaign(this.state.minimumContribution)
                 .send({
                     from: accounts[0],
-                    gas: "1000000",
                 });
 
             // Navigate to home page
             Router.pushRoute("/");
         } catch (error) {
-            console.log(
-                "Error creating campaign -->",
-                JSON.stringify(error, null, 2)
-            );
+            console.log("Error creating campaign -->", error);
 
             this.setState({
                 errorMessage:
