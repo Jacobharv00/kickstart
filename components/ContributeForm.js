@@ -34,7 +34,6 @@ class ContributeForm extends Component {
                 errorMessage:
                     error.message ??
                     "Sorry, something went wrong please try again later",
-                isLoading: false,
             });
         }
 

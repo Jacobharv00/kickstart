@@ -26,9 +26,21 @@ class RequestNew extends Component {
         this.setState({ isLoading: true, errorMessage: "" });
 
         const campaign = Campaign(this.props.address);
+        const { description, value, recipient } = this.state;
 
         try {
-            console.log("wire up");
+            const accounts = web3.eth.getAccounts();
+
+            // Order matters here for params on createRequest(). Can reference contract method.
+            await campaign.methods
+                .createRequest(
+                    description,
+                    web3.utils.toWei(value, "ether"),
+                    recipient
+                )
+                .send({ from: accounts[0] });
+
+            Router.pushRoute(`/campaigns/${this.props.address}/requests`);
         } catch (error) {
             console.log("Error creating new request -->", error);
 
@@ -36,7 +48,6 @@ class RequestNew extends Component {
                 errorMessage:
                     error.message ??
                     "Sorry, something went wrong please try again later",
-                isLoading: false,
             });
         }
 
@@ -46,12 +57,15 @@ class RequestNew extends Component {
     render() {
         return (
             <Layout>
+                <Link route={`/campaigns/${this.props.address}/requests`}>
+                    <a>Back</a>
+                </Link>
                 <h3>Create a Request</h3>
                 <Form
                     onSubmit={this.onSubmit}
                     error={!!this.state.errorMessage}
                 >
-                    {/* Description */}
+                    {/* ===== Description ===== */}
                     <Form.Field>
                         <label>Description</label>
                         <Input
@@ -62,7 +76,7 @@ class RequestNew extends Component {
                         />
                     </Form.Field>
 
-                    {/*  Value */}
+                    {/* ===== Value ===== */}
                     <Form.Field>
                         <label>Amount in Ether</label>
                         <Input
@@ -73,7 +87,7 @@ class RequestNew extends Component {
                         />
                     </Form.Field>
 
-                    {/* Recipient */}
+                    {/* ===== Recipient ===== */}
                     <Form.Field>
                         <label>Recipient</label>
                         <Input

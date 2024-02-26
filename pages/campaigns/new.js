@@ -36,7 +36,6 @@ class CampaignNew extends Component {
                     error.message ??
                     "Sorry, something went wrong please try again later",
                 minimumContribution: "",
-                isLoading: false,
             });
         }
 
